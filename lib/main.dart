@@ -22,6 +22,7 @@ class RandomWords extends StatefulWidget {
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _biggerFont = TextStyle(fontSize: 18.0);
+  final _saved = Set<WordPair>();
 
   Widget _buildSuggestionsList() {
     return ListView.builder(
@@ -41,10 +42,27 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final _alreadySaved = _saved.contains(pair);
+
+    void _handleListTileTap() {
+      setState(() {
+        if (_alreadySaved) {
+          _saved.remove(pair);
+        } else {
+          _saved.add(pair);
+        }
+      });
+    }
+
     return ListTile(
+      onTap: () => _handleListTileTap(),
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
+      ),
+      trailing: Icon(
+        _alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: _alreadySaved ? Colors.red : null,
       ),
     );
   }
